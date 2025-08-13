@@ -1,17 +1,16 @@
 # docker-compose.yml
 # DEBUGGING VERSION: This is a simplified file to isolate the error.
 # It does NOT include the VPN container.
-
-version: "3.7"
-
 services:
+  # Umbrel's app proxy service - REQUIRED for all Umbrel apps
+  app_proxy:
+    environment:
+      APP_HOST: qbittorrent
+      APP_PORT: 8080
+
   # The qBittorrent container, running directly without a VPN.
   qbittorrent:
     image: hotio/qbittorrent:latest
-    container_name: qbittorrent-app-debug
-    ports:
-      # Expose the port directly since there is no VPN container.
-      - "8080:8080"
     volumes:
       # Mapped to the app's specific data directory.
       - ${APP_DATA_DIR}/config:/config
