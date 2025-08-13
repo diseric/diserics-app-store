@@ -1,42 +1,17 @@
 # docker-compose.yml
-# This file defines the services that make up the app.
-# VERSION 3: Removed invalid text causing YAML parsing errors.
+# DEBUGGING VERSION: This is a simplified file to isolate the error.
+# It does NOT include the VPN container.
 
 version: "3.7"
 
 services:
-  # The VPN container. All network traffic will go through here.
-  vpn:
-    image: qmcgaw/gluetun:latest
-    container_name: qbittorrent-vpn-gluetun
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    volumes:
-      # Mapped to the app's specific data directory.
-      - ${APP_DATA_DIR}/gluetun:/gluetun
-    environment:
-      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
-      - VPN_TYPE=${OPENVPN_PROTOCOL}
-      - OPENVPN_USER=${OPENVPN_USER}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
-      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
-      - SERVER_CITIES=${SERVER_CITIES}
-      - PUID=1000
-      - PGID=1000
-      - VPN_LAN_NETWORK=192.168.0.0/16
-    restart: unless-stopped
-
-  # The qBittorrent container.
+  # The qBittorrent container, running directly without a VPN.
   qbittorrent:
     image: hotio/qbittorrent:latest
-    container_name: qbittorrent-vpn-app
-    network_mode: "service:vpn"
-    depends_on:
-      - vpn
+    container_name: qbittorrent-app-debug
+    ports:
+      # Expose the port directly since there is no VPN container.
+      - "8080:8080"
     volumes:
       # Mapped to the app's specific data directory.
       - ${APP_DATA_DIR}/config:/config
