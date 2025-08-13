@@ -1,31 +1,60 @@
+# docker-compose.yml
+# This file defines the services that make up the app.
+# VERSION 2: Corrected volume paths for Umbrel compatibility.
+
+version: "3.7"
+
 services:
-  app:
-    hostname: container-name.internal #
-    environment:
-      - VPN_ENABLED=true #
-      - VPN_CONF=wg0 #
-      - VPN_PROVIDER=pia #
-      - VPN_LAN_NETWORK=192.168.1.0/24 #
-      - VPN_LAN_LEAK_ENABLED=false #
-      - VPN_EXPOSE_PORTS_ON_LAN #
-      - VPN_AUTO_PORT_FORWARD=true #
-      - VPN_AUTO_PORT_FORWARD_TO_PORTS= #
-      - VPN_FIREWALL_TYPE=auto #
-      - VPN_HEALTHCHECK_ENABLED=false #
-      - VPN_NAMESERVERS= #
-      - VPN_PIA_USER #
-      - VPN_PIA_PASS #
-      - VPN_PIA_PREFERRED_REGION #
-      - VPN_PIA_DIP_TOKEN=no #
-      - VPN_PIA_PORT_FORWARD_PERSIST=false #
-      - PRIVOXY_ENABLED=false #
-      - UNBOUND_ENABLED=false #
-      - UNBOUND_NAMESERVERS #
+  # The VPN container. All network traffic will go through here.
+  vpn:
+    image: qmcgaw/gluetun:latest
+    container_name: qbittorrent-vpn-gluetun
     cap_add:
       - NET_ADMIN
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1 #
-      - net.ipv6.conf.all.disable_ipv6=1 #
     devices:
-      - /dev/net/tun:/dev/net/tun # OPTIONAL
-    ...
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      # CORRECTED: Mapped to the app's specific data directory.
+      - ${APP_DATA_DIR}/gluetun:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${OPENVPN_PROTOCOL}
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+      - SERVER_CITIES=${SERVER_CITIES}
+      - PUID=1000
+      - PGID=1000
+      - VPN_LAN_NETWORK=192.168.0.0/16
+    restart: unless-stopped
+
+  # The qBittorrent container.
+  qbittorrent:
+    image: hotio/qbittorrent:latest
+    container_name: qbittorrent-vpn-app
+    network_mode: "service:vpn"
+    depends_on:
+      - vpn
+    volumes:
+      # CORRECTED: Mapped to the app's specific data directory.
+      - ${APP_DATA_DIR}/config:/config
+      - ${APP_DATA_DIR}/downloads:/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - WEBUI_PORT=8080
+    restart: unless-stopped
+```
+
+### Next Steps
+
+1.  **Update the File:** Replace the content of `diseric-qbittorrent-vpn/docker-compose.yml` in your GitHub repository with the code from the Canvas above.
+2.  **Commit and Push:** Save and push the change to your GitHub repository.
+3.  **Refresh in Umbrel:**
+    * Go to the App Store > Community App Stores.
+    * **Remove** "Diseric's App Store".
+    * **Add it back** with the same URL.
+
+This should fix the parsing error and allow you to install the a
