@@ -16,7 +16,7 @@ description: >-
   You must configure your VPN provider in the settings before starting the app.
   Supports many providers like PIA, NordVPN, Mullvad, and more.
 developer: The qBittorrent project
-author: Your Name
+author: diseric
 port: 8080
 
 # This tells Umbrel to use the docker-compose.yml file for its setup.
@@ -103,4 +103,4 @@ permissions:
 submission:
   website: https://www.qbittorrent.org/
   container_source: https://hotio.dev/containers/qbittorrent/
-  app_source: https://github.com/your-username/your-repo
+  app_source: https://github.com/diseric/diserics-app-store.git
