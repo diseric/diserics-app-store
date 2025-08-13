@@ -1,6 +1,6 @@
 # docker-compose.yml
 # This file defines the services that make up the app.
-# VERSION 2: Corrected volume paths for Umbrel compatibility.
+# VERSION 3: Removed invalid text causing YAML parsing errors.
 
 version: "3.7"
 
@@ -14,7 +14,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      # CORRECTED: Mapped to the app's specific data directory.
+      # Mapped to the app's specific data directory.
       - ${APP_DATA_DIR}/gluetun:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
@@ -38,7 +38,7 @@ services:
     depends_on:
       - vpn
     volumes:
-      # CORRECTED: Mapped to the app's specific data directory.
+      # Mapped to the app's specific data directory.
       - ${APP_DATA_DIR}/config:/config
       - ${APP_DATA_DIR}/downloads:/data
     environment:
@@ -46,15 +46,3 @@ services:
       - PGID=1000
       - WEBUI_PORT=8080
     restart: unless-stopped
-```
-
-### Next Steps
-
-1.  **Update the File:** Replace the content of `diseric-qbittorrent-vpn/docker-compose.yml` in your GitHub repository with the code from the Canvas above.
-2.  **Commit and Push:** Save and push the change to your GitHub repository.
-3.  **Refresh in Umbrel:**
-    * Go to the App Store > Community App Stores.
-    * **Remove** "Diseric's App Store".
-    * **Add it back** with the same URL.
-
-This should fix the parsing error and allow you to install the a
