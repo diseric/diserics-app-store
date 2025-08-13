@@ -1,6 +1,6 @@
 # umbrel-app.yml
 # This file defines the user-facing configuration for the qBittorrent+VPN app.
-manifestVersion: 1
+
 id: qbittorrent-vpn
 name: qBittorrent with VPN
 version: "4.6.5"
@@ -16,7 +16,7 @@ description: >-
   You must configure your VPN provider in the settings before starting the app.
   Supports many providers like PIA, NordVPN, Mullvad, and more.
 developer: The qBittorrent project
-author: diseric
+author: Your Name
 port: 8080
 
 # This tells Umbrel to use the docker-compose.yml file for its setup.
@@ -38,7 +38,7 @@ settings:
           label: VPN Provider
           type: select
           options:
-            - id: private internet access
+            - id: privateinternetaccess
               label: Private Internet Access
             - id: nordvpn
               label: NordVPN
@@ -50,7 +50,7 @@ settings:
               label: ProtonVPN
             - id: custom
               label: Custom (OpenVPN)
-          defaultValue: private internet access
+          defaultValue: privateinternetaccess
         - id: OPENVPN_PROTOCOL
           label: VPN Protocol
           type: select
@@ -103,4 +103,4 @@ permissions:
 submission:
   website: https://www.qbittorrent.org/
   container_source: https://hotio.dev/containers/qbittorrent/
-  app_source: https://github.com/diseric/diserics-app-store.git
+  app_source: https://github.com/your-username/your-repo
